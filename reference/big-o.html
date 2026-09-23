@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Big-O Cheat Sheet</title>
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  article > * { max-width: 44rem; }
+  h1 { font-size: 1.9rem; }
+  h2 { margin-top: 2rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+  td code { background: none; padding: 0; }
+</style>
+</head>
+<body>
+<article>
+
+<nav class="crumbs"><a href="../index.html">DSA</a> · Reference</nav>
+
+<h1>Big-O cheat sheet</h1>
+<p class="subtitle">How cost grows with input size, and what Python's built-ins cost. From <a href="../lessons/0001-why-in-can-be-slow.html">Lesson 1</a>.</p>
+
+<h2>Growth rates, fastest first</h2>
+<table>
+  <tr><th>Big-O</th><th>Name</th><th>n doubles →</th><th>Typical source</th></tr>
+  <tr><td><code>O(1)</code></td><td>constant</td><td>same</td><td><code>x in set</code>, <code>d[k]</code>, <code>lst[i]</code>, <code>append</code></td></tr>
+  <tr><td><code>O(log n)</code></td><td>logarithmic</td><td>+1 step</td><td>halving the search space each step</td></tr>
+  <tr><td><code>O(n)</code></td><td>linear</td><td>×2</td><td>one loop; <code>x in list</code></td></tr>
+  <tr><td><code>O(n log n)</code></td><td>linearithmic</td><td>a bit over ×2</td><td><code>sorted()</code>, <code>list.sort()</code></td></tr>
+  <tr><td><code>O(n²)</code></td><td>quadratic</td><td>×4</td><td>loop inside a loop; all pairs</td></tr>
+  <tr><td><code>O(2ⁿ)</code></td><td>exponential</td><td>squared</td><td>trying every subset</td></tr>
+</table>
+
+<div class="grid">
+<div>
+<h2>Rules</h2>
+<ol class="steps">
+  <li><strong>Count steps, as a function of n</strong>, the input size. Assume the worst case unless it's stated otherwise.</li>
+  <li><strong>Keep the dominant term:</strong> <code>3n² + 5n + 100</code> → <code>O(n²)</code>.</li>
+  <li><strong>Drop constants:</strong> <code>2n</code>, <code>n/2</code> → <code>O(n)</code>.</li>
+  <li><strong>One loop after another adds:</strong> <code>n + n</code> → <code>O(n)</code>.</li>
+  <li><strong>A loop inside a loop multiplies:</strong> <code>n × n</code> → <code>O(n²)</code>.</li>
+  <li><strong>Watch for hidden loops.</strong> A single built-in call can be O(n) (see the table).</li>
+</ol>
+</div>
+<div>
+<h2>Doubling test</h2>
+<p>Time the code at n, 2n and 4n, then check the ratio between each run:</p>
+<table>
+  <tr><th>Each doubling costs</th><th>Probably</th></tr>
+  <tr><td>about the same</td><td><code>O(1)</code></td></tr>
+  <tr><td>×2</td><td><code>O(n)</code></td></tr>
+  <tr><td>×4</td><td><code>O(n²)</code></td></tr>
+  <tr><td>×8</td><td><code>O(n³)</code></td></tr>
+</table>
+</div>
+</div>
+
+<h2>What Python operations cost (average case)</h2>
+<p style="font-size:0.85rem;color:var(--muted)">From the <a href="https://wiki.python.org/moin/TimeComplexity">Python Wiki's TimeComplexity page</a>. <em>n</em> is the container's size; <em>k</em> is the size of the argument, such as the slice length.</p>
+
+<div class="grid">
+<table>
+  <tr><th>list</th><th class="num">cost</th></tr>
+  <tr><td><code>lst[i]</code>, <code>lst[i] = x</code></td><td class="num">O(1)</td></tr>
+  <tr><td><code>append(x)</code>, <code>pop()</code></td><td class="num">O(1)</td></tr>
+  <tr><td><code>len(lst)</code></td><td class="num">O(1)</td></tr>
+  <tr><td><code>x in lst</code> ⚠</td><td class="num">O(n)</td></tr>
+  <tr><td><code>insert(i, x)</code>, <code>pop(i)</code> ⚠</td><td class="num">O(n)</td></tr>
+  <tr><td><code>del lst[i]</code> ⚠</td><td class="num">O(n)</td></tr>
+  <tr><td><code>min</code>, <code>max</code>, copy, iterate</td><td class="num">O(n)</td></tr>
+  <tr><td><code>lst[a:b]</code>, <code>extend</code></td><td class="num">O(k)</td></tr>
+  <tr><td><code>sort()</code></td><td class="num">O(n log n)</td></tr>
+</table>
+<table>
+  <tr><th>set / dict</th><th class="num">cost</th></tr>
+  <tr><td><code>x in s</code>, <code>k in d</code></td><td class="num">O(1)</td></tr>
+  <tr><td><code>d[k]</code>, <code>d[k] = v</code></td><td class="num">O(1)</td></tr>
+  <tr><td><code>del d[k]</code></td><td class="num">O(1)</td></tr>
+  <tr><td>iterate</td><td class="num">O(n)</td></tr>
+  <tr><td><code>set(lst)</code>, <code>dict(...)</code> (build)</td><td class="num">O(n)</td></tr>
+</table>
+</div>
+<p style="font-size:0.85rem;color:var(--muted)">⚠ These are the usual hidden O(n)s. Inside a loop they make the whole thing O(n²).</p>
+
+<h2>The fix, in one line</h2>
+<pre><span class="c"># O(n²): `in` on a list inside a loop</span>
+hits = [x for x in a if x in b]
+
+<span class="c"># O(n): build a set once (O(n)), then each lookup is O(1)</span>
+b_set = set(b)
+hits = [x for x in a if x in b_set]</pre>
+
+</article>
+</body>
+</html>

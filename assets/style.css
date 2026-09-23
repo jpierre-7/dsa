@@ -1,0 +1,171 @@
+/* Shared stylesheet for every lesson and reference page.
+   Tufte-inspired: one readable column, notes in the right margin, restrained colour. */
+
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap");
+
+:root {
+  --bg: #fffff8;
+  --fg: #111;
+  --muted: #5d5d5d;
+  --rule: #d9d6c8;
+  --code-bg: #f3f1e6;
+  --accent: #a0282d;
+  --good: #2f6f3e;
+  --bad: #a0282d;
+  --bar: #3a5a80;
+  --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151515;
+    --fg: #e8e6df;
+    --muted: #a3a09a;
+    --rule: #3a3833;
+    --code-bg: #22211e;
+    --accent: #e0787c;
+    --good: #7cc48c;
+    --bad: #e0787c;
+    --bar: #8fb0d8;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151515; --fg: #e8e6df; --muted: #a3a09a; --rule: #3a3833;
+  --code-bg: #22211e; --accent: #e0787c; --good: #7cc48c; --bad: #e0787c; --bar: #8fb0d8;
+}
+
+* { box-sizing: border-box; }
+
+html { font-size: 18px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--serif);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+article {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 16px 5rem;
+}
+
+/* Main column, leaving room for margin notes on wide screens */
+article > * { max-width: 38rem; }
+@media (min-width: 1000px) {
+  article { padding-left: 5rem; }
+}
+
+nav.crumbs {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+nav.crumbs a { color: var(--muted); }
+
+h1 {
+  font-weight: 400;
+  font-size: 2.3rem;
+  line-height: 1.15;
+  margin: 0 0 0.4rem;
+}
+p.subtitle {
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin: 0 0 2.5rem;
+}
+h2 {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 1.55rem;
+  margin: 3rem 0 0.8rem;
+}
+h3 { font-weight: 600; font-size: 1rem; margin: 2rem 0 0.5rem; }
+
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 2px; }
+a:hover { color: var(--accent); }
+
+code, pre, kbd { font-family: var(--mono); font-size: 0.8rem; }
+:not(pre) > code { background: var(--code-bg); padding: 0.1em 0.3em; border-radius: 3px; }
+pre {
+  background: var(--code-bg);
+  padding: 0.9rem 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre .c { color: var(--muted); font-style: italic; }   /* comment */
+pre .hl { color: var(--accent); font-weight: 600; }   /* highlighted part */
+
+/* Margin notes (Tufte "sidenotes"): float right on wide screens, inline on narrow ones */
+.note {
+  display: block;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+  margin: 0.5rem 0 1rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--rule);
+}
+@media (min-width: 1000px) {
+  .note {
+    float: right;
+    clear: right;
+    width: 15rem;
+    margin: 0.2rem -18rem 1rem 0;
+    padding-left: 0;
+    border-left: none;
+  }
+}
+
+/* Boxes */
+.callout {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.8rem 0;
+  margin: 1.8rem 0;
+}
+.callout > :first-child { margin-top: 0; }
+.callout > :last-child { margin-bottom: 0; }
+.label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 1rem 0; }
+th, td { text-align: left; padding: 0.35rem 0.6rem 0.35rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; border-bottom: 1.5px solid var(--fg); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+ol.steps li, ul li { margin-bottom: 0.4rem; }
+
+footer.next {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+button, input, select { font: inherit; color: inherit; }
+
+@media print {
+  :root { --bg: #fff; --fg: #000; }
+  body { font-size: 11pt; }
+  article { max-width: none; padding: 0; }
+  .no-print, .quiz button.check { display: none !important; }
+  .note { float: none; width: auto; margin: 0.3rem 0; }
+  a { text-decoration: none; }
+  h2, h3 { break-after: avoid; }
+  pre, table, .callout { break-inside: avoid; }
+}

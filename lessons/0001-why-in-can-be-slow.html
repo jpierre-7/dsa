@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why "in" Can Be Slow</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<article>
+
+<nav class="crumbs"><a href="../index.html">DSA</a> · Lesson 1 · about 20 minutes</nav>
+
+<h1>Why <code style="font-size:0.85em">in</code> can be slow</h1>
+<p class="subtitle">Counting steps, and your first Big-O</p>
+
+<div class="callout">
+  <span class="label">Today's win</span>
+  You'll take a function that gets 4× slower every time its input doubles, rewrite it so it only gets 2× slower, and measure the difference yourself. Along the way you'll learn to read the notation <code>O(n)</code> and <code>O(n²)</code>.
+</div>
+
+<h2>Guess first</h2>
+
+<p>This is the kind of code that ships every day. It drops messages from blocked senders:</p>
+
+<pre>blocked = load_blocked_ids()     <span class="c"># a list of 100,000 ids</span>
+for msg in messages:              <span class="c"># 100,000 messages</span>
+    if msg.sender_id <span class="hl">in blocked</span>:
+        drop(msg)</pre>
+
+<p>Before you read on, guess: in the worst case, roughly how many comparisons does this make? Commit to a number, even a rough one.<span class="note">Guessing before you're taught is called <em>pretesting</em>. A wrong guess still helps you remember the answer when you see it.</span></p>
+
+<details class="callout">
+  <summary>Reveal</summary>
+  <p>Up to <strong>10 billion</strong>. That's 100,000 messages times up to 100,000 comparisons each. A one-line change brings it down to roughly 100,000 steps. By the end of this lesson you should be able to find that line yourself.</p>
+</details>
+
+<h2>1. Count steps, not seconds</h2>
+
+<p>Timing depends on your laptop, but the <em>number of steps</em> an algorithm takes doesn't. So we measure cost as a count of basic steps, written as a function of <strong>n</strong>, the size of the input.</p>
+
+<p><code>x in some_list</code> looks like one operation, but Python has to check the items one at a time until it finds <code>x</code>. If <code>x</code> isn't there, which is the worst case, it checks all <em>n</em> items. So its cost grows in step with <em>n</em>.</p>
+
+<p><code>x in some_set</code> works differently. A set jumps almost straight to where <code>x</code> would be, so on average it takes about the same small number of steps whether the set holds ten items or ten million.<span class="note">How a set manages this is called <em>hashing</em>, and it gets its own lesson. For now, trust the table: the <a href="https://wiki.python.org/moin/TimeComplexity">Python Wiki's TimeComplexity page</a> lists list <code>x in s</code> as O(n) and set <code>x in s</code> as O(1) average.</span></p>
+
+<h2>2. Big-O is the shape of that growth</h2>
+
+<p>Big-O notation keeps only the part of the step count that matters when <em>n</em> gets large:<span class="note">Miller &amp; Ranum put it this way: Big-O classifies an algorithm by "its dominant process with respect to the size of the problem." See <a href="https://runestone.academy/ns/books/published/pythonds3/AlgorithmAnalysis/BigONotation.html">§2.3 Big-O Notation</a>.</span></p>
+
+<ol class="steps">
+  <li><strong>Keep the dominant term.</strong> <code>3n² + 5n + 100</code> is <code>O(n²)</code>. Once <em>n</em> is large, the <code>n²</code> term dwarfs everything else.</li>
+  <li><strong>Drop constant factors.</strong> <code>2n</code> is <code>O(n)</code>, and so is <code>n/2</code>. Constants depend on the machine; the shape of the growth doesn't.</li>
+</ol>
+
+<p>So <code>x in list</code> is <strong>O(n)</strong>, read "order <em>n</em>" or "linear". <code>x in set</code> is <strong>O(1)</strong>, "constant time", on average.</p>
+
+<h2>3. Nested loops multiply</h2>
+
+<p>Code that runs one loop after another <em>adds</em> the costs: <code>n + n = 2n</code>, which is O(n). A loop <em>inside</em> another loop <em>multiplies</em> them: n × n = <strong>O(n²)</strong>, "quadratic".</p>
+
+<p>The catch is that some loops don't look like loops. In the opening example there's only one <code>for</code>, but <code>in blocked</code> hides a second loop over a list, so the whole thing is O(n²). Here's the same pattern with both loops visible:</p>
+
+<pre>def has_duplicates_slow(items):
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):   <span class="c"># loop inside a loop</span>
+            if items[i] == items[j]:
+                return True
+    return False</pre>
+
+<p>The inner loop starts at <code>i + 1</code>, so this compares about n²/2 pairs, not n². That's still <strong>O(n²)</strong>, because dropping the ½ is exactly rule 2.</p>
+
+<h2>4. Feel the difference</h2>
+
+<p>Drag the slider. Somewhere past n = 10,000, quadratic code stops being a small delay and becomes an outage.</p>
+
+<div class="growth" data-series="1:set lookup,n:list lookup or one loop,n2:loop inside a loop" data-rate="1e7" data-start="1000"></div>
+
+<p class="note" style="float:none;width:auto;margin:0">On the machine this lesson was written on, the slow duplicate check ran about 25 million comparisons a second, so 10⁷ steps per second is a slightly cautious round figure.</p>
+
+<h2>5. Do it: make it O(n)</h2>
+
+<ol class="steps">
+  <li>Open <code>exercises/0001_has_duplicates.py</code>.</li>
+  <li>Fill in <code>has_duplicates_fast</code>. You may only loop over <code>items</code> once. Try it without looking back at the lesson.</li>
+  <li>Run <code>python3 exercises/0001_has_duplicates.py</code>. It checks your answers, then times both versions as <em>n</em> doubles.</li>
+</ol>
+
+<p>What to look for: each time <em>n</em> doubles, the slow version takes about <strong>×4</strong> as long, and yours takes about <strong>×2</strong>. This <em>doubling test</em> is a quick way to identify a growth rate from measurements: ×2 means O(n), ×4 means O(n²).</p>
+
+<div class="callout">
+  <span class="label">Why this matters for you</span>
+  <p><strong>At work:</strong> any time you see <code>in</code>, <code>.index()</code> or <code>.remove()</code> on a list inside a loop, check whether it's a hidden O(n²).<br>
+  <strong>In interviews:</strong> a common first improvement to a brute-force answer is to replace a repeated O(n) lookup with an O(1) set or dict lookup. As the <a href="https://www.techinterviewhandbook.org/algorithms/hash-table/">Tech Interview Handbook</a> puts it, checking membership in a hash table "is O(1) on average."</p>
+</div>
+
+<h2>Check yourself</h2>
+
+<p>Try these from memory. The effort of recalling is what makes it stick.</p>
+<div class="quiz-score"></div>
+
+<div class="quiz">
+  <p class="q">1. <code>emails</code> is a list of n strings. In the worst case, how does the cost of <code>x in emails</code> grow?</p>
+  <ul>
+    <li>O(1)</li>
+    <li data-correct>O(n)</li>
+    <li>O(n²)</li>
+    <li>O(2ⁿ)</li>
+  </ul>
+  <p class="why">A list is scanned item by item. If <code>x</code> isn't present, every one of the n items is checked.</p>
+</div>
+
+<div class="quiz">
+  <p class="q">2. You convert it with <code>emails_set = set(emails)</code>. What's the average cost of <code>x in emails_set</code>?</p>
+  <ul>
+    <li data-correct>O(1)</li>
+    <li>O(n)</li>
+    <li>O(n²)</li>
+    <li>O(n³)</li>
+  </ul>
+  <p class="why">Set membership is O(1) on average, per the <a href="https://wiki.python.org/moin/TimeComplexity">Python Wiki</a>. Building the set costs O(n) once, so it pays off when you look things up many times.</p>
+</div>
+
+<div class="quiz">
+  <p class="q">3. <code>a</code> and <code>b</code> are both lists of length n. What's the Big-O of <code>[x for x in a if x in b]</code>?</p>
+  <ul>
+    <li>O(1)</li>
+    <li>O(n)</li>
+    <li data-correct>O(n²)</li>
+    <li>O(n³)</li>
+  </ul>
+  <p class="why">There's one visible loop over <code>a</code>, and <code>in b</code> hides a second loop over a list. Nested loops multiply: n × n. Making <code>b</code> a set brings it down to O(n).</p>
+</div>
+
+<div class="quiz">
+  <p class="q">4. A function loops over a list once to find the max, then loops over it again to count how many items equal that max. What's its Big-O?</p>
+  <ul>
+    <li>O(1)</li>
+    <li data-correct>O(n)</li>
+    <li>O(2n)</li>
+    <li>O(n²)</li>
+  </ul>
+  <p class="why">These loops run one after the other, so their costs add: n + n = 2n. Dropping the constant factor gives O(n). You'd never write O(2n) as a final answer.</p>
+</div>
+
+<div class="quiz">
+  <p class="q">5. An O(n²) function takes 1 second at n = 10,000. Roughly how long will it take at n = 20,000?</p>
+  <ul>
+    <li>1 s</li>
+    <li>2 s</li>
+    <li data-correct>4 s</li>
+    <li>8 s</li>
+  </ul>
+  <p class="why">Doubling n multiplies n² by 2² = 4. This is the doubling test from the exercise, run in reverse.</p>
+</div>
+
+<h2>Read next</h2>
+
+<p><strong>Primary source:</strong> Miller &amp; Ranum, <em>Problem Solving with Algorithms and Data Structures using Python</em>, 3rd ed.: <a href="https://runestone.academy/ns/books/published/pythonds3/AlgorithmAnalysis/BigONotation.html">§2.3 Big-O Notation</a> and <a href="https://runestone.academy/ns/books/published/pythonds3/AlgorithmAnalysis/PerformanceofPythonDataStructures.html">§2.5 Performance of Python Data Structures</a>. It's free, it uses Python, and it covers the same ground at a gentler pace, with its own timing experiments.</p>
+
+<p><strong>If you want depth:</strong> <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/resources/lecture-1-algorithms-and-computation/">MIT 6.006, Lecture 1: Algorithms and Computation</a>.</p>
+
+<p><strong>Keep for later:</strong> the <a href="../reference/big-o.html">Big-O cheat sheet</a> has the rules from this lesson and the cost of common Python operations, sized to print on one page.</p>
+
+<div class="callout">
+  <span class="label">Explain it back</span>
+  <p>Open Claude Code and answer these in your own words. I'll ask follow-up questions, not just mark them:</p>
+  <ol class="steps">
+    <li>The opening example has only one <code>for</code> loop. Why is it O(n²)?</li>
+    <li>What one-line change fixes it, and what does that change cost up front?</li>
+    <li>Give an example of O(n) code that could still be slower than O(n²) code, and say when that could happen.</li>
+  </ol>
+</div>
+
+<footer class="next">
+  <p><strong>Stuck or curious?</strong> Ask me, your teacher in Claude Code, anything that's unclear. If you get stuck on the exercise, ask for a <em>hint</em>, not the answer. I'll give you the smallest nudge that gets you moving again. When you're done, tell me your quiz score and I'll use it to plan the next lesson.</p>
+  <p>Next up: dicts, and the "count things in one pass" pattern behind Two Sum.</p>
+</footer>
+
+</article>
+<script src="../assets/quiz.js"></script>
+<script src="../assets/growth.js"></script>
+</body>
+</html>
