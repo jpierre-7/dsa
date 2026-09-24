@@ -8,7 +8,7 @@ The canonical terms for this workspace. A term is added only once the user has s
 The size of the input, such as the number of items in a list.
 
 **Big-O**:
-How the number of steps grows as n grows, keeping only the dominant term and dropping constant factors.
+How the number of steps (time) or the amount of extra memory (space) grows as n grows. It keeps only the dominant term and drops constant factors, and usually describes the worst case. Time and space are separate answers.
 _Avoid_: complexity (alone), speed
 
 **O(1) / constant time**:
