@@ -41,7 +41,27 @@ for msg in messages:              <span class="c"># 100,000 messages</span>
 
 <p><code>x in some_list</code> looks like one operation, but Python has to check the items one at a time until it finds <code>x</code>. If <code>x</code> isn't there, which is the worst case, it checks all <em>n</em> items. So its cost grows in step with <em>n</em>.</p>
 
-<p><code>x in some_set</code> works differently. A set jumps almost straight to where <code>x</code> would be, so on average it takes about the same small number of steps whether the set holds ten items or ten million.<span class="note">How a set manages this is called <em>hashing</em>, and it gets its own lesson. For now, trust the table: the <a href="https://wiki.python.org/moin/TimeComplexity">Python Wiki's TimeComplexity page</a> lists list <code>x in s</code> as O(n) and set <code>x in s</code> as O(1) average.</span></p>
+<p><code>x in some_set</code> works differently. A set jumps almost straight to where <code>x</code> would be, so on average it takes about the same small number of steps whether the set holds ten items or ten million.<span class="note">The <a href="https://wiki.python.org/moin/TimeComplexity">Python Wiki's TimeComplexity page</a> lists list <code>x in s</code> as O(n) and set <code>x in s</code> as O(1) average.</span></p>
+
+<h3>How a set finds x without looking through everything</h3>
+
+<p>Picture a filing cabinet with one drawer per letter, A to Z. Each name goes in the drawer for its first letter. To check "Is Marcus here?", you open drawer M, and only drawer M.</p>
+
+<pre>Drawer A: Aisha
+Drawer C: Chen
+Drawer M: Marcus        <span class="c"># "Marcus" → go straight to M</span>
+Drawer P: Priya
+Drawer T: Tom</pre>
+
+<p>A list is the same names in one pile. To find "Zoe" in the pile, you check every name.</p>
+
+<p>Python's sets work like the cabinet. Instead of first letters, they use <code>hash(x)</code>, which turns a value into a number. That number picks the drawer, which Python calls a <strong>bucket</strong>. The same value always gives the same number, so Python goes straight to one bucket.</p>
+
+<p><strong>Why "on average"?</strong> Two values can land in the same bucket. That's called a <em>collision</em>. If every name started with M, drawer M would hold all of them, and checking it would take n steps. Python's <code>hash</code> spreads values evenly, so buckets usually hold about one item: O(1) on average, and O(n) in the rare worst case.</p>
+
+<p><strong>See it for yourself:</strong> run <code>python3 exercises/0001b_peek_inside_a_set.py</code>. It builds a toy set and prints which bucket each item lands in. Try changing the number of buckets to 2, then to 1. With 1 bucket, what does the set turn into?</p>
+
+<p class="note" style="float:none;width:auto;margin:0.5rem 0 1rem">Having no duplicates is <em>not</em> what makes a set fast. A list with no duplicates is still O(n). The buckets are what make it fast.</p>
 
 <h2>2. Big-O is the shape of that growth</h2>
 
@@ -167,7 +187,7 @@ for msg in messages:              <span class="c"># 100,000 messages</span>
   <ol class="steps">
     <li>The opening example has only one <code>for</code> loop. Why is it O(n²)?</li>
     <li>What one-line change fixes it, and what does that change cost up front?</li>
-    <li>Give an example of O(n) code that could still be slower than O(n²) code, and say when that could happen.</li>
+    <li>A list with no duplicates is still slow to search. So what makes a set fast?</li>
   </ol>
 </div>
 

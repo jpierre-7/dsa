@@ -1,6 +1,10 @@
 # Notes
 
 ## How the user wants to be taught
+- **Assume zero prior DSA knowledge.** The user is completely new to DSA (not rusty, not fuzzy). Define every term the first time it appears, use a concrete example before any abstraction, and never assume background knowledge. Lesson 1 assumed too much.
+- **Short, plain explanations.** Some explanations in lesson 1 didn't stick. Use the `caveman` skill (lite level) in chat. In lessons: short sentences, one idea per paragraph, example first, cut the side remarks.
+- **Show the mechanism, not only the cost.** Big-O claims like "set lookup is O(1)" didn't stick until the user saw *how* (the drawer/bucket picture and `hash(x)`). For every cost claim, show why with a concrete picture. Lesson 1 needs a "how a set finds x" section when it's rewritten.
+- **Explain-back questions must only cover what the lesson taught.** Lesson 1's Q3 (O(n) slower than O(n²)) asked about something the lesson never covered.
 - **Learns by doing. Never just give the answer.** Pose the problem, let them struggle, give hints in escalating steps (nudge → narrower hint → partial structure) only when asked or clearly stuck. Don't reveal solutions in lessons before an attempt.
 - **Check understanding every lesson**: retrieval quiz, plus an "explain it back to me" prompt they answer in chat. Probe their explanation with a follow-up question rather than just approving it.
 - When they share a solution: ask them for its Big-O and an edge case before giving any verdict.
@@ -9,7 +13,7 @@
 - Mixed goal: interviews, CS foundations, better everyday code. Frame lessons with a work angle *and* an interview angle when both fit.
 - Casual pace: keep lessons short, one win each. Open each session with retrieval of earlier lessons (spacing); interleave old patterns into later practice sets.
 - Python. Exercises live in `./exercises/` as runnable self-checking scripts (`python3 exercises/NNNN_*.py`).
-- Glossary: no `GLOSSARY.md` yet. Promote terms once the user can use them correctly.
+- Glossary: `GLOSSARY.md` exists. Use its terms in every lesson; add terms only after the user shows they understand them.
 
 ## Roadmap (revise freely; ✓ = lesson written)
 Foundations

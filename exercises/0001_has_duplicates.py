@@ -27,7 +27,17 @@ def has_duplicates_fast(items):
 
     Rule: only one loop over `items`. Stuck? Ask your teacher for a hint.
     """
-    raise NotImplementedError("Write this one!")
+    s = set()
+
+    for item in items:
+        if item in s:
+            return True
+        s.add(item)
+
+    return False
+
+
+#    raise NotImplementedError("Write this one!")
 
 
 # ---------------------------------------------------------------------------
@@ -63,14 +73,20 @@ def main():
             got = has_duplicates_fast(list(items))
             label = repr(items) if len(items) < 6 else f"<{len(items)} items>"
             if got != expected:
-                print(f"   ✗ has_duplicates_fast({label}) returned {got!r}, expected {expected!r}")
+                print(
+                    f"   ✗ has_duplicates_fast({label}) returned {got!r}, expected {expected!r}"
+                )
                 return
         print(f"   ✓ all {len(CASES)} cases pass")
     except NotImplementedError:
-        print("   has_duplicates_fast isn't written yet. Open this file and fill it in.")
+        print(
+            "   has_duplicates_fast isn't written yet. Open this file and fill it in."
+        )
         return
 
-    print("\n2. Slow version: watch what happens each time n doubles (worst case: no duplicates)")
+    print(
+        "\n2. Slow version: watch what happens each time n doubles (worst case: no duplicates)"
+    )
     prev = None
     for n in (1000, 2000, 4000):
         t = timed(has_duplicates_slow, list(range(n)))
@@ -82,7 +98,9 @@ def main():
     fast_4000 = timed(has_duplicates_fast, list(range(4000)))
     if fast_4000 * 20 > slow_4000:
         print("\n   Your fast version is barely faster than the slow one at n = 4,000.")
-        print("   Is there still a loop hiding inside a loop? Remember `x in some_list` is itself a loop.")
+        print(
+            "   Is there still a loop hiding inside a loop? Remember `x in some_list` is itself a loop."
+        )
         return
 
     print("\n3. Your version: n doubles, and doubles, and doubles...")
@@ -93,8 +111,12 @@ def main():
         print(f"   n = {n:>9,}  {fmt(t)}{ratio}")
         prev = t
 
-    print("\nThe slow version roughly quadruples (×4) each time n doubles: that's O(n²).")
-    print("Yours roughly doubles (×2): that's O(n). Now go back to the lesson and finish the quiz.")
+    print(
+        "\nThe slow version roughly quadruples (×4) each time n doubles: that's O(n²)."
+    )
+    print(
+        "Yours roughly doubles (×2): that's O(n). Now go back to the lesson and finish the quiz."
+    )
 
 
 if __name__ == "__main__":
