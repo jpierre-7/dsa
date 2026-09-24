@@ -1,6 +1,11 @@
 # Notes
 
 ## How the user wants to be taught
+- **No assumptions about knowledge** unless the user explicitly says they know something.
+- **Explain how things work** (the mechanism), not only what they cost or do.
+- **Visual aids and demos** to make things click: diagrams, runnable toy scripts (like `exercises/0001b_peek_inside_a_set.py`), interactive widgets.
+- **Flashcards at the end of every lesson** (`assets/flashcards.js`), covering every new term. Start each session by rerunning the previous deck.
+- **Caveman skill (lite)** for some explanations in chat. Drop it when full sentences are clearer.
 - **Assume zero prior DSA knowledge.** The user is completely new to DSA (not rusty, not fuzzy). Define every term the first time it appears, use a concrete example before any abstraction, and never assume background knowledge. Lesson 1 assumed too much.
 - **Short, plain explanations.** Some explanations in lesson 1 didn't stick. Use the `caveman` skill (lite level) in chat. In lessons: short sentences, one idea per paragraph, example first, cut the side remarks.
 - **Show the mechanism, not only the cost.** Big-O claims like "set lookup is O(1)" didn't stick until the user saw *how* (the drawer/bucket picture and `hash(x)`). For every cost claim, show why with a concrete picture. Lesson 1 needs a "how a set finds x" section when it's rewritten.

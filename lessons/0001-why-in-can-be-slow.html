@@ -173,6 +173,32 @@ Drawer T: Tom</pre>
   <p class="why">Doubling n multiplies n² by 2² = 4. This is the doubling test from the exercise, run in reverse.</p>
 </div>
 
+<h2>Flashcards</h2>
+
+<p>Answer each one out loud before you flip it. Come back tomorrow and run the deck again: spacing the practice out is what makes it stick.</p>
+
+<div class="flashcards">
+  <div class="card"><div class="front">What does <strong>Big-O</strong> describe?</div><div class="back">How the number of steps (or amount of memory) <em>grows</em> as the input size n grows. It describes the shape of the growth, not the seconds.</div></div>
+  <div class="card"><div class="front">What is <strong>n</strong>?</div><div class="back">The size of the input, e.g. how many items are in the list.</div></div>
+  <div class="card"><div class="front">Two rules for simplifying Big-O?</div><div class="back">Keep the dominant term. Drop constant factors.<br><code>3n² + 5n + 100</code> → <code>O(n²)</code></div></div>
+  <div class="card"><div class="front"><strong>O(1)</strong> means…</div><div class="back">Constant: the step count stays about the same however big n gets.</div></div>
+  <div class="card"><div class="front"><strong>O(n)</strong> means…</div><div class="back">Linear: double n → double the steps.</div></div>
+  <div class="card"><div class="front"><strong>O(n²)</strong> means…</div><div class="back">Quadratic: double n → 4× the steps. Usually a loop inside a loop.</div></div>
+  <div class="card"><div class="front">Loops one <em>after</em> another vs one <em>inside</em> another?</div><div class="back">After: costs <strong>add</strong> (n + n → O(n)).<br>Inside: costs <strong>multiply</strong> (n × n → O(n²)).</div></div>
+  <div class="card"><div class="front">What is a <strong>hidden loop</strong>? Give an example.</div><div class="back">One line that loops internally, like <code>x in some_list</code>. Inside a <code>for</code> loop, it makes the whole thing O(n²).</div></div>
+  <div class="card"><div class="front">Cost of <code>x in some_list</code>? Why?</div><div class="back">O(n). Python checks items one by one.</div></div>
+  <div class="card"><div class="front">Cost of <code>x in some_set</code>? Why?</div><div class="back">O(1) on average. Python <em>computes</em> <code>hash(x) % buckets</code> and jumps straight to that one bucket.</div></div>
+  <div class="card"><div class="front">What does <code>hash(x)</code> do?</div><div class="back">It turns a value into a number. The same value always gives the same number, and that number picks the bucket.</div></div>
+  <div class="card"><div class="front">What is a <strong>bucket</strong>?</div><div class="back">One numbered slot in a set. Lookup opens one bucket instead of scanning everything.</div></div>
+  <div class="card"><div class="front">What is a <strong>collision</strong>?</div><div class="back">Two <em>different</em> values landing in the same bucket. It has nothing to do with duplicates.</div></div>
+  <div class="card"><div class="front">Why is set lookup O(1) <em>on average</em>, not always?</div><div class="back">Collisions. If everything landed in one bucket, a lookup would check n items: O(n) worst case.</div></div>
+  <div class="card"><div class="front">What makes a set fast: no duplicates, or buckets?</div><div class="back">Buckets. A list with no duplicates is still O(n). A set with 1 bucket <em>is</em> a list.</div></div>
+  <div class="card"><div class="front">Why does Python add buckets as a set grows?</div><div class="back">To keep about 1 item per bucket, so lookup stays O(1).</div></div>
+  <div class="card"><div class="front">What is <strong>space complexity</strong>?</div><div class="back">Big-O for extra memory. A seen-set uses O(n); two index variables use O(1).</div></div>
+  <div class="card"><div class="front">The <strong>doubling test</strong>: time ×2 and ×4 mean…?</div><div class="back">Double n and time the code again. ×2 → O(n). ×4 → O(n²).</div></div>
+  <div class="card"><div class="front">Fix for <code>for x in a: if x in b</code> where <code>b</code> is a list?</div><div class="back">Build <code>b_set = set(b)</code> once (O(n)), then check <code>x in b_set</code>. The total goes from O(n²) to O(n).</div></div>
+</div>
+
 <h2>Read next</h2>
 
 <p><strong>Primary source:</strong> Miller &amp; Ranum, <em>Problem Solving with Algorithms and Data Structures using Python</em>, 3rd ed.: <a href="https://runestone.academy/ns/books/published/pythonds3/AlgorithmAnalysis/BigONotation.html">§2.3 Big-O Notation</a> and <a href="https://runestone.academy/ns/books/published/pythonds3/AlgorithmAnalysis/PerformanceofPythonDataStructures.html">§2.5 Performance of Python Data Structures</a>. It's free, it uses Python, and it covers the same ground at a gentler pace, with its own timing experiments.</p>
@@ -199,5 +225,6 @@ Drawer T: Tom</pre>
 </article>
 <script src="../assets/quiz.js"></script>
 <script src="../assets/growth.js"></script>
+<script src="../assets/flashcards.js"></script>
 </body>
 </html>
