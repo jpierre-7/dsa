@@ -1,4 +1,4 @@
-def binarySearch(array, value):
+def binary_search(array, value):
     low = 0
     high = len(array) - 1
 
@@ -17,6 +17,6 @@ def binarySearch(array, value):
 array = list(range(1, 100))
 value = int(input("Enter value to  check if in array: "))
 
-index = binarySearch(array, value)
+index = binary_search(array, value)
 
 print(f"{value} found at index {index}" if index != -1 else f"{value} not found")
